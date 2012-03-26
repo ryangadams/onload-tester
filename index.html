@@ -3,7 +3,6 @@
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Page Title</title>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	<style type="text/css">    
 	h1, h2, h3, h4{clear:both;}
 	#the-frame{width:300px;float:left;margin:10px;}
@@ -66,7 +65,7 @@ var updateTotal = function(theTime){
 		runtest(url, updateTotal);
 	} else {
 		document.getElementById("the-rest").className = "complete";
-		$("#history").prepend('<p><a href="'+ url +'">'+ url +'</a> - ' + the_score + ' ('+ scores.length +')</p>');
+		document.getElementById("history").innerHTML = '<p><a href="'+ url +'">'+ url +'</a> - ' + the_score + ' ('+ scores.length +' requests)</p>' + document.getElementById("history").innerHTML;
 	}
 }   
 var clearTotal = function() {
