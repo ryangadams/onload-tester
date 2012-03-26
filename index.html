@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Page Title</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<style type="text/css">    
+	h1, h2, h3, h4{clear:both;}
+	#the-frame{width:300px;float:left;margin:10px;}
+	.complete{border:1px solid red;}                           
+	#reset{display:none;}
+	.complete #reset{display:inline;}
+	#the-rest{margin:10px;float:left;padding:10px;}
+	#the-url-under-test:before{content:"URL under test: ";}
+	#the-count:before{content:"Test Count: ";}
+	#the-average:before{content:"Average Time: ";}
+	#the-result:before{content:"Scores: ";} 
+	#history{clear:both;margin:10px;}
+	</style>
+</head>              
+<body id="">           
+	<h1>Page onLoad Timer Test Harness</h1>
+<iframe id="the-frame"></iframe>
+<div id="the-rest">
+	<h2>Test Setup</h2>
+<form id="the-setup" method="get" action="test">
+	<p><label for="the-url">URL to test</label><input type="text" id="the-url" size="70" /></p>
+	<p><label for="the-number">Time to repeat</label><input type="text" id="the-number" size="4" /></p>
+	<p><input type="submit" id="the-button" value="Test" /></p>
+</form>                                                        
+<p><a id="reset" href="#">Reset Results</a></p>
+<p id="the-url-under-test"></p>
+<p id="the-count"></p>    
+<p id="the-average"></p>
+<p id="the-result"></p>
+</div> 
+<h2>Test History</h2>                  
+<div id="history">
+</div>
+<script>
+var runtest = function (url, callback) {
+	var start = new Date();
+	var end = 0;
+	// the event you'd like to time goes here:
+	document.getElementById("the-frame").onload = function(){
+		end = new Date();
+		var elapsed = end.getTime() - start.getTime(); // time in milliseconds
+		callback(elapsed);
+	}
+	document.getElementById("the-frame").src=url;
+}   
+    
+var updateTotal = function(theTime){ 
+	document.getElementById("the-result").innerHTML = document.getElementById("the-result").innerHTML + " " + theTime;                                               
+	var url = document.getElementById("the-url").value;
+	scores = document.getElementById("the-result").innerHTML.trim().split(" ");
+	score = 0;     
+	
+	for(var i=0;i<scores.length;i++) {
+		score+= parseInt(scores[i], 10);
+	}                                    
+	var the_score = parseInt(score/scores.length-1, 10)
+	document.getElementById("the-average").innerHTML = the_score;
+	document.getElementById("the-count").innerHTML = scores.length;
+	if (scores.length < parseInt(document.getElementById("the-number").value, 10)) {
+		runtest(url, updateTotal);
+	} else {
+		document.getElementById("the-rest").className = "complete";
+		$("#history").prepend('<p><a href="'+ url +'">'+ url +'</a> - ' + the_score + ' ('+ scores.length +')</p>');
+	}
+}   
+var clearTotal = function() {
+	document.getElementById("the-rest").className = "";
+	document.getElementById("the-result").innerHTML = "";
+	document.getElementById("the-average").innerHTML = "";
+	document.getElementById("the-count").innerHTML = "";
+}
+               
+document.getElementById("reset").onclick = function(e) {
+	e.preventDefault();
+	clearTotal();
+	return false;
+} 
+document.getElementById("the-setup").onsubmit = function(e) {
+	e.preventDefault();                
+	var url = document.getElementById("the-url").value;
+	if(url != document.getElementById("the-url-under-test").innerHTML) {
+		clearTotal();
+		document.getElementById("the-url-under-test").innerHTML = url;
+	}
+	runtest(url, updateTotal);
+	return false;
+}
+</script>
+</body>
+</html>
