@@ -2,19 +2,85 @@
 <html>
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-	<title>Page Title</title>
+	<title>onLoad Speed Tester</title>
 	<style type="text/css">    
-	h1, h2, h3, h4{clear:both;}
-	#the-frame{width:300px;float:left;margin:10px;}
-	.complete{border:1px solid red;}                           
-	#reset{display:none;}
-	.complete #reset{display:inline;}
-	#the-rest{margin:10px;float:left;padding:10px;}
-	#the-url-under-test:before{content:"URL under test: ";}
-	#the-count:before{content:"Test Count: ";}
-	#the-average:before{content:"Average Time: ";}
-	#the-result:before{content:"Scores: ";} 
-	#history{clear:both;margin:10px;}
+	body{font-family:helvetica, arial, sans-serif;font-size:75%;}
+	p{margin:0.4em 0px;}
+	h1, h2, h3, h4 {clear: both; margin-top:0px;}
+	#the-frame {float: left; margin: 10px; width: 300px;}
+	#the-rest.complete {border: 1px solid red;}
+	#reset {display: none;}
+	.complete #reset {display: inline;}
+	.active div.spinner {display:inline-block;}
+	#the-rest {float: left; margin: 10px; padding: 10px;background:#efefef;border:1px solid #333;}
+	#the-url-under-test:before {content: "URL under test: "; color:#333;}
+    #the-count:before {content: "Test Count: "; color:#333;}
+	#the-average:before { content: "Average Time (ms): "; color:#333;}
+	#the-result:before {content: "Scores (ms): "; color:#333;}
+	#history {clear: both;margin: 0px; font-family:Consolas, courier, fixed-width;}
+	#history p{padding:3px;margin:0px;}
+	#history p:nth-child(2n+1){background:#efefef;}
+	
+	
+	/* Spinner code adapted from 37signals */
+	div.spinner {
+	      position: relative;
+	      width: 16px;
+	      height: 16px;
+	      display: none;
+	    }
+
+	    div.spinner div {
+	      width: 12%;
+	      height: 26%;
+	      background: #000;
+	      position: absolute;
+	      left: 44.5%;
+	      top: 37%;
+	      opacity: 0;
+	      -webkit-animation: fade 1s linear infinite;
+	      -webkit-border-radius: 50px;
+	      -webkit-box-shadow: 0 0 3px rgba(0,0,0,0.2);
+	
+          -moz-animation: fade 1s linear infinite;
+	      -moz-border-radius: 50px;
+	      -moz-box-shadow: 0 0 3px rgba(0,0,0,0.2);
+	    }
+
+	    div.spinner div.bar1 {-webkit-transform:rotate(0deg) translate(0, -142%); -webkit-animation-delay: 0s;
+		-moz-transform:rotate(0deg) translate(0, -142%); -moz-animation-delay: 0s;}    
+	    div.spinner div.bar2 {-webkit-transform:rotate(30deg) translate(0, -142%); -webkit-animation-delay: -0.9167s;
+		-moz-transform:rotate(30deg) translate(0, -142%); -moz-animation-delay: -0.9167s;}
+	    div.spinner div.bar3 {-webkit-transform:rotate(60deg) translate(0, -142%); -webkit-animation-delay: -0.833s;
+		-moz-transform:rotate(60deg) translate(0, -142%); -moz-animation-delay: -0.833s;}
+	    div.spinner div.bar4 {-webkit-transform:rotate(90deg) translate(0, -142%); -webkit-animation-delay: -0.75s;
+		-moz-transform:rotate(90deg) translate(0, -142%); -moz-animation-delay: -0.75s;}
+	    div.spinner div.bar5 {-webkit-transform:rotate(120deg) translate(0, -142%); -webkit-animation-delay: -0.667s;
+		-moz-transform:rotate(120deg) translate(0, -142%); -moz-animation-delay: -0.667s;}
+	    div.spinner div.bar6 {-webkit-transform:rotate(150deg) translate(0, -142%); -webkit-animation-delay: -0.5833s;
+		-moz-transform:rotate(150deg) translate(0, -142%); -moz-animation-delay: -0.5833s;}
+	    div.spinner div.bar7 {-webkit-transform:rotate(180deg) translate(0, -142%); -webkit-animation-delay: -0.5s;
+		-moz-transform:rotate(180deg) translate(0, -142%); -moz-animation-delay: -0.5s;}
+	    div.spinner div.bar8 {-webkit-transform:rotate(210deg) translate(0, -142%); -webkit-animation-delay: -0.41667s;
+		-moz-transform:rotate(210deg) translate(0, -142%); -moz-animation-delay: -0.41667s;}
+	    div.spinner div.bar9 {-webkit-transform:rotate(240deg) translate(0, -142%); -webkit-animation-delay: -0.333s;
+		-moz-transform:rotate(240deg) translate(0, -142%); -moz-animation-delay: -0.333s;}
+	    div.spinner div.bar10 {-webkit-transform:rotate(270deg) translate(0, -142%); -webkit-animation-delay: -0.25s;
+		-moz-transform:rotate(270deg) translate(0, -142%); -moz-animation-delay: -0.25s;}
+	    div.spinner div.bar11 {-webkit-transform:rotate(300deg) translate(0, -142%); -webkit-animation-delay: -0.1667s;
+		-moz-transform:rotate(300deg) translate(0, -142%); -moz-animation-delay: -0.1667s;}
+	    div.spinner div.bar12 {-webkit-transform:rotate(330deg) translate(0, -142%); -webkit-animation-delay: -0.0833s;
+		-moz-transform:rotate(330deg) translate(0, -142%); -moz-animation-delay: -0.0833s;}
+
+	     @-webkit-keyframes fade {
+	      from {opacity: 1;}
+	      to {opacity: 0.25;}
+	    }
+		@-moz-keyframes fade {
+	      from {opacity: 1;}
+	      to {opacity: 0.25;}
+	    }
+	/* ends */
 	</style>
 </head>              
 <body id="">           
@@ -26,6 +92,22 @@
 	<p><label for="the-url">URL to test</label><input type="text" id="the-url" size="70" /></p>
 	<p><label for="the-number">Time to repeat</label><input type="text" id="the-number" size="4" /></p>
 	<p><input type="submit" id="the-button" value="Test" /></p>
+	
+	<div class="spinner">
+	    <div class="bar1"></div>
+	    <div class="bar2"></div>
+	    <div class="bar3"></div>
+	    <div class="bar4"></div>
+	    <div class="bar5"></div>
+	    <div class="bar6"></div>
+	    <div class="bar7"></div>
+	    <div class="bar8"></div>
+	    <div class="bar9"></div>
+	    <div class="bar10"></div>
+	    <div class="bar11"></div>
+	    <div class="bar12"></div>
+	  </div>
+	
 </form>                                                        
 <p><a id="reset" href="#">Reset Results</a></p>
 <p id="the-url-under-test"></p>
@@ -50,6 +132,8 @@ var runtest = function (url, callback) {
 }   
     
 var updateTotal = function(theTime){ 
+	// unset the event handler (we'll add it again when we runtest)
+	document.getElementById("the-frame").onload = null;
 	document.getElementById("the-result").innerHTML = document.getElementById("the-result").innerHTML + " " + theTime;                                               
 	var url = document.getElementById("the-url").value;
 	scores = document.getElementById("the-result").innerHTML.trim().split(" ");
@@ -66,6 +150,7 @@ var updateTotal = function(theTime){
 	} else {
 		document.getElementById("the-rest").className = "complete";
 		document.getElementById("history").innerHTML = '<p><a href="'+ url +'">'+ url +'</a> - ' + the_score + ' ('+ scores.length +' requests)</p>' + document.getElementById("history").innerHTML;
+		document.getElementById("the-frame").src="";
 	}
 }   
 var clearTotal = function() {
@@ -87,6 +172,7 @@ document.getElementById("the-setup").onsubmit = function(e) {
 		clearTotal();
 		document.getElementById("the-url-under-test").innerHTML = url;
 	}
+	document.getElementById("the-rest").className = "active";
 	runtest(url, updateTotal);
 	return false;
 }
