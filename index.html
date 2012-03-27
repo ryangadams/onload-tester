@@ -21,7 +21,6 @@
 	#history {clear: both;margin: 0px; font-family:Consolas, courier, fixed-width;}
 	#history p{padding:3px;margin:0px;}
 	#history p:nth-child(2n+1){background:#efefef;}
-	.test-date{float:right}
 	
 	/* Spinner code adapted from 37signals 
 	 * I added the -moz- bits
@@ -222,6 +221,24 @@ $get("the-setup").onsubmit = function(e) {
 if(localStorage && localStorage.getItem("saved-tests")) {
 	$get("history").innerHTML = localStorage.getItem("saved-tests");
 	enableDeletion();
+}
+
+function loadPageVar (sVar) {  
+  return unescape(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + escape(sVar).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));  
+}
+
+if(window.location.search != "") {
+	var url = loadPageVar("url");
+	var times = loadPageVar("times");
+	var discard = loadPageVar("discard");
+	if(times && url) {
+		$get("the-url").value = url;
+		$get("the-number").value = times;
+		if(discard == "no") {
+			$get("ignore-first-test").checked=false;
+		}
+		$get("the-button").click();
+	}
 }
 })()
 </script>
