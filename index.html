@@ -121,29 +121,31 @@
 <div id="history">
 </div>
 <script>
+(function(){
+var $get = function(s){return s && s.nodeType==1? s: document.getElementById(s)};
 var runtest = function (url, callback) {
 	var start = new Date();
 	var end = 0;
 	// the event you'd like to time goes here:
-	document.getElementById("the-frame").onload = function(){
+	$get("the-frame").onload = function(){
 		end = new Date();
 		var elapsed = end.getTime() - start.getTime(); // time in milliseconds
 		callback(elapsed);
 	}
-	document.getElementById("the-frame").src=url;
+	$get("the-frame").src=url;
 }   
     
 var updateTotal = function(theTime){ 
 	// unset the event handler (we'll add it again when we runtest)
-	document.getElementById("the-frame").onload = null;
-	document.getElementById("the-result").innerHTML = document.getElementById("the-result").innerHTML + " " + theTime;                                               
-	var url = document.getElementById("the-url").value;
-	scores = document.getElementById("the-result").innerHTML.trim().split(" ");
+	$get("the-frame").onload = null;
+	$get("the-result").innerHTML = $get("the-result").innerHTML + " " + theTime;                                               
+	var url = $get("the-url").value;
+	scores = $get("the-result").innerHTML.trim().split(" ");
 	score = 0;     
 	
 	var start = 0;
 	var total_tests = scores.length;
-	if(document.getElementById("ignore-first-test").checked) {
+	if($get("ignore-first-test").checked) {
 		start = 1;
 		total_tests = scores.length - 1;
 	}
@@ -151,42 +153,43 @@ var updateTotal = function(theTime){
 		score+= parseInt(scores[i], 10);
 	}                                    
 	var the_score = parseInt(score/total_tests, 10)
-	document.getElementById("the-average").innerHTML = the_score;
-	document.getElementById("the-count").innerHTML = total_tests;
-	if (scores.length < parseInt(document.getElementById("the-number").value, 10)) {
+	$get("the-average").innerHTML = the_score;
+	$get("the-count").innerHTML = total_tests;
+	if (scores.length < parseInt($get("the-number").value, 10)) {
 		runtest(url, updateTotal);
 	} else {
 		var testDate = new Date();
 		
-		document.getElementById("the-rest").className = "complete";
-		document.getElementById("history").innerHTML = '<p><a href="'+ url +'">'+ url +'</a> - ' + the_score + ' ('+ total_tests +' tests) on <span class="test-date">' + testDate.toUTCString() + '</span></p>' + document.getElementById("history").innerHTML;
-		document.getElementById("the-frame").src="";
+		$get("the-rest").className = "complete";
+		$get("history").innerHTML = '<p><a href="'+ url +'">'+ url +'</a> - ' + the_score + ' ('+ total_tests +' tests) on <span class="test-date">' + testDate.toUTCString() + '</span></p>' + $get("history").innerHTML;
+		$get("the-frame").src="";
 	}
 }   
 var clearTotal = function() {
-	document.getElementById("the-rest").className = "";
-	document.getElementById("the-url-under-test").innerHTML = "";
-	document.getElementById("the-result").innerHTML = "";
-	document.getElementById("the-average").innerHTML = "";
-	document.getElementById("the-count").innerHTML = "";
+	$get("the-rest").className = "";
+	$get("the-url-under-test").innerHTML = "";
+	$get("the-result").innerHTML = "";
+	$get("the-average").innerHTML = "";
+	$get("the-count").innerHTML = "";
 }
                
-document.getElementById("reset").onclick = function(e) {
+$get("reset").onclick = function(e) {
 	e.preventDefault();
 	clearTotal();
 	return false;
 } 
-document.getElementById("the-setup").onsubmit = function(e) {
+$get("the-setup").onsubmit = function(e) {
 	e.preventDefault();                
-	var url = document.getElementById("the-url").value;
-	if(url != document.getElementById("the-url-under-test").innerHTML) {
+	var url = $get("the-url").value;
+	if(url != $get("the-url-under-test").innerHTML) {
 		clearTotal();
-		document.getElementById("the-url-under-test").innerHTML = url;
+		$get("the-url-under-test").innerHTML = url;
 	}
-	document.getElementById("the-rest").className = "active";
+	$get("the-rest").className = "active";
 	runtest(url, updateTotal);
 	return false;
 }
+})()
 </script>
 </body>
 </html>
