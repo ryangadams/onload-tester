@@ -22,7 +22,10 @@
 	#history p:nth-child(2n+1){background:#efefef;}
 	.test-date{float:right}
 	
-	/* Spinner code adapted from 37signals */
+	/* Spinner code adapted from 37signals 
+	 * I added the -moz- bits
+	 * http://37signals.com/svn/posts/2577-loading-spinner-animation-using-css-and-webkit
+	 */
 	div.spinner {
 	      position: relative;
 	      width: 16px;
@@ -117,7 +120,8 @@
 <p id="the-average"></p>
 <p id="the-result"></p>
 </div> 
-<h2>Test History</h2>                  
+<h2>Test History</h2> 
+<p>History should persist across sessions</p>                 
 <div id="history">
 </div>
 <script>
@@ -161,10 +165,34 @@ var updateTotal = function(theTime){
 		var testDate = new Date();
 		
 		$get("the-rest").className = "complete";
-		$get("history").innerHTML = '<p><a href="'+ url +'">'+ url +'</a> - ' + the_score + ' ('+ total_tests +' tests) on <span class="test-date">' + testDate.toUTCString() + '</span></p>' + $get("history").innerHTML;
+		saveResults(url, the_score, total_tests, testDate);
 		$get("the-frame").src="";
 	}
 }   
+var persistResults = function() {
+	if(localStorage) {
+		localStorage.setItem("saved-tests", $get("history").innerHTML);		
+	}
+}
+var saveResults = function(url, score, total_tests, thedate) {
+	$get("history").innerHTML = '<p><a href="'+ url +'">'+ url +'</a> - ' + score + ' ('+ total_tests +' tests) on <span class="test-date">' + thedate.toUTCString() + '</span><a href="#" class="remove-test">remove</a></p>' + $get("history").innerHTML;
+	persistResults();
+	enableDeletion();
+}
+
+var deleteTestResult = function(row) {
+	row.parentNode.removeChild(row);
+	persistResults();
+}
+var enableDeletion = function() {
+	var deleteLinks = document.getElementsByClassName("remove-test");
+	for(var i=0;i<deleteLinks.length;i++) {
+		deleteLinks[i].onclick = function(e) {
+			e.preventDefault();
+			deleteTestResult(this.parentNode);
+		}
+	}
+}
 var clearTotal = function() {
 	$get("the-rest").className = "";
 	$get("the-url-under-test").innerHTML = "";
@@ -188,6 +216,10 @@ $get("the-setup").onsubmit = function(e) {
 	$get("the-rest").className = "active";
 	runtest(url, updateTotal);
 	return false;
+}
+if(localStorage && localStorage.getItem("saved-tests")) {
+	$get("history").innerHTML = localStorage.getItem("saved-tests");
+	enableDeletion();
 }
 })()
 </script>
