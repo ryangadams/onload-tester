@@ -20,7 +20,7 @@
 	#history {clear: both;margin: 0px; font-family:Consolas, courier, fixed-width;}
 	#history p{padding:3px;margin:0px;}
 	#history p:nth-child(2n+1){background:#efefef;}
-	
+	.test-date{float:right}
 	
 	/* Spinner code adapted from 37signals */
 	div.spinner {
@@ -148,8 +148,10 @@ var updateTotal = function(theTime){
 	if (scores.length < parseInt(document.getElementById("the-number").value, 10)) {
 		runtest(url, updateTotal);
 	} else {
+		var testDate = new Date();
+		
 		document.getElementById("the-rest").className = "complete";
-		document.getElementById("history").innerHTML = '<p><a href="'+ url +'">'+ url +'</a> - ' + the_score + ' ('+ scores.length +' requests)</p>' + document.getElementById("history").innerHTML;
+		document.getElementById("history").innerHTML = '<p><a href="'+ url +'">'+ url +'</a> - ' + the_score + ' ('+ scores.length +' requests) on <span class="test-date">' + testDate.toUTCString() + '</span></p>' + document.getElementById("history").innerHTML;
 		document.getElementById("the-frame").src="";
 	}
 }   
