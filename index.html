@@ -91,6 +91,8 @@
 <form id="the-setup" method="get" action="test">
 	<p><label for="the-url">URL to test</label><input type="text" id="the-url" size="70" /></p>
 	<p><label for="the-number">Time to repeat</label><input type="text" id="the-number" size="4" /></p>
+	<p><input type="checkbox" id="ignore-first-test" value="yes" checked="checked" />
+		<label for="ignore-first-test">Discard the First Test (i.e. warm cache)</label></p>
 	<p><input type="submit" id="the-button" value="Test" /></p>
 	
 	<div class="spinner">
@@ -139,24 +141,31 @@ var updateTotal = function(theTime){
 	scores = document.getElementById("the-result").innerHTML.trim().split(" ");
 	score = 0;     
 	
-	for(var i=0;i<scores.length;i++) {
+	var start = 0;
+	var total_tests = scores.length;
+	if(document.getElementById("ignore-first-test").checked) {
+		start = 1;
+		total_tests = scores.length - 1;
+	}
+	for(var i=start;i<scores.length;i++) {
 		score+= parseInt(scores[i], 10);
 	}                                    
-	var the_score = parseInt(score/scores.length-1, 10)
+	var the_score = parseInt(score/total_tests, 10)
 	document.getElementById("the-average").innerHTML = the_score;
-	document.getElementById("the-count").innerHTML = scores.length;
+	document.getElementById("the-count").innerHTML = total_tests;
 	if (scores.length < parseInt(document.getElementById("the-number").value, 10)) {
 		runtest(url, updateTotal);
 	} else {
 		var testDate = new Date();
 		
 		document.getElementById("the-rest").className = "complete";
-		document.getElementById("history").innerHTML = '<p><a href="'+ url +'">'+ url +'</a> - ' + the_score + ' ('+ scores.length +' requests) on <span class="test-date">' + testDate.toUTCString() + '</span></p>' + document.getElementById("history").innerHTML;
+		document.getElementById("history").innerHTML = '<p><a href="'+ url +'">'+ url +'</a> - ' + the_score + ' ('+ total_tests +' tests) on <span class="test-date">' + testDate.toUTCString() + '</span></p>' + document.getElementById("history").innerHTML;
 		document.getElementById("the-frame").src="";
 	}
 }   
 var clearTotal = function() {
 	document.getElementById("the-rest").className = "";
+	document.getElementById("the-url-under-test").innerHTML = "";
 	document.getElementById("the-result").innerHTML = "";
 	document.getElementById("the-average").innerHTML = "";
 	document.getElementById("the-count").innerHTML = "";
