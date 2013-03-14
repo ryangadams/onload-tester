@@ -95,6 +95,8 @@
 <form id="the-setup" method="get" action="test">
 	<p><label for="the-url">URL to test</label><input type="text" id="the-url" size="70" /></p>
 	<p><label for="the-number">Time to repeat</label><input type="text" id="the-number" size="4" /></p>
+	<p><input type="checkbox" id="cachebust-with-querystring" value="yes" checked="checked" />
+		<label for="cachebust-with-querystring">Cachebust with querystring?</label></p>
 	<p><input type="checkbox" id="ignore-first-test" value="yes" checked="checked" />
 		<label for="ignore-first-test">Discard the First Test (i.e. warm cache)</label></p>
 	<p><input type="submit" id="the-button" value="Test" /></p>
@@ -137,6 +139,9 @@ var runtest = function (url, callback) {
 		var elapsed = end.getTime() - start.getTime(); // time in milliseconds
 		callback(elapsed);
 	}
+	if($get("cachebust-with-querystring").checked) {
+	    url += "?t=" + start.getTime();
+    }
 	$get("the-frame").src=url;
 }   
     
